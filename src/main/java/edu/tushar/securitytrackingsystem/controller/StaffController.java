@@ -3,6 +3,7 @@ package edu.tushar.securitytrackingsystem.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.tushar.securitytrackingsystem.dto.request.StaffRequestDto;
+import edu.tushar.securitytrackingsystem.dto.response.StaffResponseDto;
 import edu.tushar.securitytrackingsystem.entity.Staff;
+import edu.tushar.securitytrackingsystem.response.ResponseStructure;
 import edu.tushar.securitytrackingsystem.service.StaffService;
 
 
@@ -24,8 +28,8 @@ public class StaffController {
     private StaffService staffService;
 
     @PostMapping
-    public Staff addStaff(@RequestBody Staff staff) {
-        return staffService.addStaff(staff); // QR will be auto-generated
+    public ResponseEntity<ResponseStructure<StaffResponseDto>> addStaff(@RequestBody StaffRequestDto staff) {
+        return staffService.addStaff(staff); 
     }
 
     @GetMapping

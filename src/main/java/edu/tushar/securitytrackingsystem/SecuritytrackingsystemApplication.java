@@ -19,5 +19,5 @@ public class SecuritytrackingsystemApplication {
 	public OpenAPI getOpenApi() {
 		return new OpenAPI();
 	}
-
+	
 }
