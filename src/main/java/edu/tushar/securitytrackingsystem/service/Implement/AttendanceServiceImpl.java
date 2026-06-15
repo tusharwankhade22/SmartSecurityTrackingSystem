@@ -36,7 +36,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 	@Override
 	public String markAttendance(Long staffId) {
 		 Staff staff = staffRepository.findById(staffId)
-	                .orElseThrow(() -> new StaffNotFoundException());
+	                .orElseThrow(() -> new StaffNotFoundException("Staff is not found with an given id"));
 		 
 	     LocalDate today = LocalDate.now();
 	     LocalTime now = LocalTime.now();
