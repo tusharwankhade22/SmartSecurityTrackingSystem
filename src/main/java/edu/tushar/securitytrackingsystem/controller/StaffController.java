@@ -18,6 +18,7 @@ import edu.tushar.securitytrackingsystem.dto.response.StaffResponseDto;
 import edu.tushar.securitytrackingsystem.entity.Staff;
 import edu.tushar.securitytrackingsystem.response.ResponseStructure;
 import edu.tushar.securitytrackingsystem.service.StaffService;
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -28,17 +29,17 @@ public class StaffController {
     private StaffService staffService;
 
     @PostMapping
-    public ResponseEntity<ResponseStructure<StaffResponseDto>> addStaff(@RequestBody StaffRequestDto staff) {
+    public ResponseEntity<ResponseStructure<StaffResponseDto>> addStaff(@Valid @RequestBody StaffRequestDto staff) {
         return staffService.addStaff(staff); 
     }
 
     @GetMapping
-    public List<Staff> getAllStaff() {
+    public ResponseEntity<ResponseStructure<List<StaffResponseDto>>> getAllStaff() {
         return staffService.getAllStaff();
     }
 
     @GetMapping("/{id}")
-    public Staff getStaffById(@PathVariable Long id) {
+    public ResponseEntity<ResponseStructure<StaffResponseDto>> getStaffById(@PathVariable Long id) {
         return staffService.getStaffById(id);
     }
 

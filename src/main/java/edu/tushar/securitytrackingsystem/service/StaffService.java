@@ -14,7 +14,7 @@ import edu.tushar.securitytrackingsystem.response.ResponseStructure;
 public interface StaffService {
 	ResponseEntity<ResponseStructure<StaffResponseDto>>
 	addStaff(StaffRequestDto dto);
-    List<Staff> getAllStaff();
-    Staff getStaffById(Long id);
+	ResponseEntity<ResponseStructure<List<StaffResponseDto>>> getAllStaff();
+	ResponseEntity<ResponseStructure<StaffResponseDto>> getStaffById(Long id);
     void deleteStaff(Long id);
 }
