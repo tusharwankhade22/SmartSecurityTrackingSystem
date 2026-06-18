@@ -17,4 +17,5 @@ public interface StaffService {
 	ResponseEntity<ResponseStructure<List<StaffResponseDto>>> getAllStaff();
 	ResponseEntity<ResponseStructure<StaffResponseDto>> getStaffById(Long id);
     void deleteStaff(Long id);
+    ResponseEntity<byte[]> getQrCode(Long id);
 }

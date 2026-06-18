@@ -32,10 +32,9 @@ public class StaffServiceImpl implements StaffService {
 
         Staff savedStaff = staffRepository.save(staff);
 
-        String qrPath = qrCodeGenerator.generateQRCodeImage(
-                savedStaff.getId().toString());
+        String qrCodeData = "STAFF_" + savedStaff.getId();
 
-        savedStaff.setQrCodePath(qrPath);
+        savedStaff.setQrCodeData(qrCodeData);
 
         savedStaff = staffRepository.save(savedStaff);
 
@@ -105,7 +104,21 @@ public class StaffServiceImpl implements StaffService {
             throw new StaffNotFoundException("Staff with the given id is not found");
         }
     }
+    
+    @Override
+    public ResponseEntity<byte[]> getQrCode(Long id) {
 
+        Staff staff = staffRepository.findById(id)
+                .orElseThrow(() ->
+                        new StaffNotFoundException("Staff not found with id : " + id));
+
+        byte[] qrImage = qrCodeGenerator.generateQRCodeImage(
+                staff.getQrCodeData());
+
+        return ResponseEntity.ok()
+                .contentType(org.springframework.http.MediaType.IMAGE_PNG)
+                .body(qrImage);
+    }
     // DTO -> Entity
     private Staff mapToEntity(StaffRequestDto dto) {
 
@@ -133,7 +146,7 @@ public class StaffServiceImpl implements StaffService {
         dto.setAge(staff.getAge());
         dto.setAddress(staff.getAddress());
         dto.setDesignation(staff.getDesignation());
-        dto.setQrCodePath(staff.getQrCodePath());
+        dto.setQrCodeData(staff.getQrCodeData());
 
         return dto;
     }
