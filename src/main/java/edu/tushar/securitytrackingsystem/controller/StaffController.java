@@ -18,6 +18,7 @@ import edu.tushar.securitytrackingsystem.dto.response.StaffResponseDto;
 import edu.tushar.securitytrackingsystem.entity.Staff;
 import edu.tushar.securitytrackingsystem.response.ResponseStructure;
 import edu.tushar.securitytrackingsystem.service.StaffService;
+import edu.tushar.securitytrackingsystem.util.QRCodeGenerator;
 import jakarta.validation.Valid;
 
 
@@ -27,12 +28,15 @@ import jakarta.validation.Valid;
 public class StaffController {
 	@Autowired
     private StaffService staffService;
+	
+	@Autowired 
+	private QRCodeGenerator qrCodeGenerator;
 
     @PostMapping
     public ResponseEntity<ResponseStructure<StaffResponseDto>> addStaff(@Valid @RequestBody StaffRequestDto staff) {
         return staffService.addStaff(staff); 
     }
-
+  
     @GetMapping
     public ResponseEntity<ResponseStructure<List<StaffResponseDto>>> getAllStaff() {
         return staffService.getAllStaff();
@@ -47,4 +51,8 @@ public class StaffController {
     public void deleteStaff(@PathVariable Long id) {
         staffService.deleteStaff(id);
     }
+    
+    @GetMapping("/{id}/qr")
+    public ResponseEntity<byte[]> getQrCode(@PathVariable Long id) {
+        return staffService.getQrCode(id);   }
 }

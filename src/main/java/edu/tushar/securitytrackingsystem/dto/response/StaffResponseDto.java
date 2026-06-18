@@ -12,5 +12,5 @@ public class StaffResponseDto {
     private int age;
     private String address;
     private String designation;
-    private String qrCodePath;
+    private String qrCodeData;
 }
