@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.stereotype.Service;
 
 import edu.tushar.securitytrackingsystem.dto.request.StaffRequestDto;
@@ -85,24 +86,24 @@ public class StaffServiceImpl implements StaffService {
             return ResponseEntity.ok(response);
         }
 
-        response.setStatus("ERROR");
-        response.setMessage("Staff not found with id : " + id);
-        response.setData(null);
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(response);
+        throw new StaffNotFoundException("Staff with the given id is not found");
     }
 
     @Override
-    public void deleteStaff(Long id) {
+    public BodyBuilder deleteStaff(Long id) {
 
         Optional<Staff> optionalStaff = staffRepository.findById(id);
+        ResponseStructure<StaffResponseDto> response = new ResponseStructure<>();
 
         if (optionalStaff.isPresent()) {
             staffRepository.delete(optionalStaff.get());
-        } else {
-            throw new StaffNotFoundException("Staff with the given id is not found");
+            response.setStatus("SUCCESS");
+            response.setMessage("Staff found successfully");
+            
+            return ResponseEntity.status(HttpStatus.NO_CONTENT);
+            
         }
+        throw new StaffNotFoundException("Staff with the given id is not found");
     }
     
     @Override
