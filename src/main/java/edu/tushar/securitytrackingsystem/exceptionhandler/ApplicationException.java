@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,9 +27,7 @@ public class ApplicationException {
         response.setMessage(exception.getMessage());
         response.setData(null);
 
-        return new ResponseEntity<>(
-                response,
-                HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -51,8 +50,7 @@ public class ApplicationException {
         response.setMessage("Validation Failed");
         response.setErrors(errors);
 
-        return new ResponseEntity<>(
-                response,
-                HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                
     }
 }
