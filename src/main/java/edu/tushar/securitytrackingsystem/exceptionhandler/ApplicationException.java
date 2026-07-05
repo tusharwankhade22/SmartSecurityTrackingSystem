@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import edu.tushar.securitytrackingsystem.exception.EmailExistsException;
+import edu.tushar.securitytrackingsystem.exception.PhoneExistsException;
 import edu.tushar.securitytrackingsystem.exception.StaffNotFoundException;
 import edu.tushar.securitytrackingsystem.response.ResponseStructure;
 
@@ -29,7 +30,28 @@ public class ApplicationException {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
-
+    
+    @ExceptionHandler(EmailExistsException.class)
+    public ResponseEntity<ResponseStructure<String>> catchEmailExistsException(EmailExistsException exception) {
+    	ResponseStructure<String> response = new ResponseStructure<>();
+    	response.setStatus("Error");
+    	response.setMessage(exception.getMessage());
+    	response.setData(null);
+    	
+    	return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(response);
+    }
+    
+    @ExceptionHandler(PhoneExistsException.class)
+    public ResponseEntity<ResponseStructure<String>> catchPhoneExistsException(PhoneExistsException exception) {
+    	
+    	ResponseStructure<String> response = new ResponseStructure<>();
+    	response.setStatus("Error");
+    	response.setMessage(exception.getMessage());
+    	response.setData(null);
+    	
+    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+    
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseStructure<Map<String, String>>>
     handleValidationException(MethodArgumentNotValidException ex) {

@@ -1,5 +1,6 @@
 package edu.tushar.securitytrackingsystem.service.Implement;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,11 +12,17 @@ import org.springframework.stereotype.Service;
 import edu.tushar.securitytrackingsystem.dto.request.StaffRequestDto;
 import edu.tushar.securitytrackingsystem.dto.response.StaffResponseDto;
 import edu.tushar.securitytrackingsystem.entity.Staff;
+import edu.tushar.securitytrackingsystem.entity.StaffSequence;
+import edu.tushar.securitytrackingsystem.exception.EmailExistsException;
+import edu.tushar.securitytrackingsystem.exception.PhoneExistsException;
 import edu.tushar.securitytrackingsystem.exception.StaffNotFoundException;
 import edu.tushar.securitytrackingsystem.repository.StaffRepository;
+import edu.tushar.securitytrackingsystem.repository.StaffSequenceRepository;
 import edu.tushar.securitytrackingsystem.response.ResponseStructure;
 import edu.tushar.securitytrackingsystem.service.StaffService;
 import edu.tushar.securitytrackingsystem.util.QRCodeGenerator;
+import edu.tushar.securitytrackingsystem.util.StaffCodeGenerator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,21 +30,32 @@ import lombok.RequiredArgsConstructor;
 public class StaffServiceImpl implements StaffService {
 
     private final StaffRepository staffRepository;
+    private final StaffSequenceRepository sequenceRepository;
+    private final StaffCodeGenerator staffCodeGenerator;
     private final QRCodeGenerator qrCodeGenerator;
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseStructure<StaffResponseDto>> addStaff(
             StaffRequestDto dto) {
-
+    	
+    	if(staffRepository.existsByEmail(dto.getEmail())) {
+    		throw new EmailExistsException("Email already exists");
+    	}
+    	
+    	if(staffRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
+    		throw new PhoneExistsException("Phone number already exists");
+    	}
+    	
+    	String staffCode = generateStaffCode();
+    	
         Staff staff = mapToEntity(dto);
-
+        
+        staff.setStaffCode(staffCode);
+        staff.setQrCodeData(staffCode);
+        staff.setActive(true);
+        
         Staff savedStaff = staffRepository.save(staff);
-
-        String qrCodeData = "STAFF_" + savedStaff.getId();
-
-        savedStaff.setQrCodeData(qrCodeData);
-
-        savedStaff = staffRepository.save(savedStaff);
 
         ResponseStructure<StaffResponseDto> response =
                 new ResponseStructure<>();
@@ -89,7 +107,6 @@ public class StaffServiceImpl implements StaffService {
         throw new StaffNotFoundException("Staff with the given id is not found");
     }
 
-    @Override
     public BodyBuilder deleteStaff(Long id) {
 
         Optional<Staff> optionalStaff = staffRepository.findById(id);
@@ -125,13 +142,18 @@ public class StaffServiceImpl implements StaffService {
 
         Staff staff = new Staff();
 
-        staff.setName(dto.getName());
-        staff.setMobile(dto.getMobile());
+        staff.setFirstName(dto.getFirstName());
+        staff.setLastName(dto.getLastName());
+        staff.setPhoneNumber(dto.getPhoneNumber());
         staff.setEmail(dto.getEmail());
-        staff.setAge(dto.getAge());
+        staff.setDateOfBirth(dto.getDateOfBirth());
         staff.setAddress(dto.getAddress());
         staff.setDesignation(dto.getDesignation());
-
+        staff.setAddress(dto.getAddress());
+        staff.setDateOfBirth(dto.getDateOfBirth());
+        staff.setGender(dto.getGender());
+        staff.setEmergencyContact(dto.getEmergencyContact());
+        staff.setJoiningDate(dto.getJoiningDate());
         return staff;
     }
 
@@ -141,14 +163,55 @@ public class StaffServiceImpl implements StaffService {
         StaffResponseDto dto = new StaffResponseDto();
 
         dto.setId(staff.getId());
-        dto.setName(staff.getName());
-        dto.setMobile(staff.getMobile());
+        dto.setStaffCode(staff.getStaffCode());
+        dto.setFirstName(staff.getFirstName());
+        dto.setLastName(staff.getLastName());
         dto.setEmail(staff.getEmail());
-        dto.setAge(staff.getAge());
-        dto.setAddress(staff.getAddress());
+        dto.setPhoneNumber(staff.getPhoneNumber());
         dto.setDesignation(staff.getDesignation());
-        dto.setQrCodeData(staff.getQrCodeData());
+        dto.setGender(staff.getGender());
+        dto.setJoiningDate(staff.getJoiningDate());
+        dto.setActive(staff.getActive());
 
         return dto;
     }
+    
+    private String generateStaffCode() {
+    	LocalDate today = LocalDate.now();
+    	int year = today.getYear() % 100;
+    	int month = today.getMonthValue();
+    	
+    	StaffSequence sequence = sequenceRepository.findByYearAndMonth(year, month)
+    			                .orElseGet(() -> {
+    			                	StaffSequence newSeqence = new StaffSequence();
+    			                	newSeqence.setYear(year);
+    			                	newSeqence.setMonth(month);
+    			                	newSeqence.setLastSequence(0);
+    			                	
+    			                	return sequenceRepository.save(newSeqence);
+    			                });
+    	
+    	sequence.setLastSequence(sequence.getLastSequence() + 1);
+    	sequenceRepository.save(sequence);
+    	
+    	return staffCodeGenerator.generateStaffCode(year, month, sequence.getLastSequence());
+    }
+
+	@Override
+	public ResponseEntity<ResponseStructure<StaffResponseDto>> updateStaff(Long id, StaffRequestDto dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<String>> activateStaff(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<String>> deactivateStaff(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

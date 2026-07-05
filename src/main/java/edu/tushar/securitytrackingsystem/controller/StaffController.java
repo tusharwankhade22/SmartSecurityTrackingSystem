@@ -44,10 +44,10 @@ public class StaffController {
         return staffService.getStaffById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public BodyBuilder deleteStaff(@PathVariable Long id) {
-        return staffService.deleteStaff(id);
-    }
+//    @DeleteMapping("/{id}")
+//    public BodyBuilder deleteStaff(@PathVariable Long id) {
+//        return staffService.deleteStaff(id);
+//    }
     
     @GetMapping("/{id}/qr")
     public ResponseEntity<byte[]> getQrCode(@PathVariable Long id) {
