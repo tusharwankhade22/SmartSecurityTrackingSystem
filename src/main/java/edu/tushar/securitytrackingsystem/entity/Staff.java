@@ -42,7 +42,7 @@ public class Staff {
     @Column(name = "emergency_contact", length = 10)
     private String emergencyContact;
     
-    private LocalDate joininDate;
+    private LocalDate joiningDate;
     
     @Column(length = 10)
     private String gender;

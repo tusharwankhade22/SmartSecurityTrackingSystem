@@ -81,7 +81,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 
 		    return attendances.stream().map(att -> {
 		        AttendanceDTO dto = new AttendanceDTO();
-		        dto.setStaffName(att.getStaff().getName());
+//		        dto.setStaffName(att.getStaff().getName());
 		        dto.setDate(att.getDate());
 		        dto.setCheckInTime(att.getCheckInTime());
 		        dto.setCheckOutTime(att.getCheckOutTime());

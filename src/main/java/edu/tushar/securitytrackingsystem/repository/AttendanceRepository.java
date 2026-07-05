@@ -16,8 +16,17 @@ import edu.tushar.securitytrackingsystem.entity.Staff;
 public interface AttendanceRepository extends JpaRepository<Attendance, Long>{
 	 Optional<Attendance> findByStaffAndDate(Staff staff, LocalDate date);
 
-	 @Query("SELECT new edu.tushar.securitytrackingsystem.entity.AttendanceDTO(" +
-		       "a.staff.id, a.staff.name, a.date, a.checkInTime, a.checkOutTime, a.workingMinutes, a.status)" +
-		       " FROM Attendance a")
-	List<AttendanceDTO> getAllAttendanceLogs();
+	 @Query("""
+			    SELECT new edu.tushar.securitytrackingsystem.entity.AttendanceDTO(
+			        a.staff.id,
+			        CONCAT(a.staff.firstName, ' ', a.staff.lastName),
+			        a.date,
+			        a.checkInTime,
+			        a.checkOutTime,
+			        a.workingMinutes,
+			        a.status
+			    )
+			    FROM Attendance a
+			    """)
+			List<AttendanceDTO> getAllAttendanceLogs();
 }
