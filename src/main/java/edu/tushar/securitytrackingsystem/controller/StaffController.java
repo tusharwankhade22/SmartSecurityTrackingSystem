@@ -5,9 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,13 +41,9 @@ public class StaffController {
     public ResponseEntity<ResponseStructure<StaffResponseDto>> getStaffById(@PathVariable Long id) {
         return staffService.getStaffById(id);
     }
-
-//    @DeleteMapping("/{id}")
-//    public BodyBuilder deleteStaff(@PathVariable Long id) {
-//        return staffService.deleteStaff(id);
-//    }
-    
+ 
     @GetMapping("/{id}/qr")
     public ResponseEntity<byte[]> getQrCode(@PathVariable Long id) {
-        return staffService.getQrCode(id);   }
+        return staffService.getQrCode(id);   
+    }
 }

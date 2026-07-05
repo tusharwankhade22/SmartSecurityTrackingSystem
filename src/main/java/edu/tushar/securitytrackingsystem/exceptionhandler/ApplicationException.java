@@ -38,7 +38,7 @@ public class ApplicationException {
     	response.setMessage(exception.getMessage());
     	response.setData(null);
     	
-    	return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(response);
+    	return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
     
     @ExceptionHandler(PhoneExistsException.class)
@@ -49,7 +49,7 @@ public class ApplicationException {
     	response.setMessage(exception.getMessage());
     	response.setData(null);
     	
-    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    	return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
     
     @ExceptionHandler(MethodArgumentNotValidException.class)

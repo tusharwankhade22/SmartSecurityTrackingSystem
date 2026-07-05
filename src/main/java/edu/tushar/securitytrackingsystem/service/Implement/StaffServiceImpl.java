@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.stereotype.Service;
 
 import edu.tushar.securitytrackingsystem.dto.request.StaffRequestDto;
@@ -52,7 +51,7 @@ public class StaffServiceImpl implements StaffService {
         Staff staff = mapToEntity(dto);
         
         staff.setStaffCode(staffCode);
-        staff.setQrCodeData(staffCode);
+        staff.setQrCodeData("STAFF:"+staffCode);
         staff.setActive(true);
         
         Staff savedStaff = staffRepository.save(staff);
@@ -84,7 +83,7 @@ public class StaffServiceImpl implements StaffService {
         response.setMessage("Staff fetched successfully");
         response.setData(staffList);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Override
@@ -101,28 +100,12 @@ public class StaffServiceImpl implements StaffService {
             response.setMessage("Staff found successfully");
             response.setData(mapToDto(optionalStaff.get()));
 
-            return ResponseEntity.ok(response);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
         throw new StaffNotFoundException("Staff with the given id is not found");
     }
 
-    public BodyBuilder deleteStaff(Long id) {
-
-        Optional<Staff> optionalStaff = staffRepository.findById(id);
-        ResponseStructure<StaffResponseDto> response = new ResponseStructure<>();
-
-        if (optionalStaff.isPresent()) {
-            staffRepository.delete(optionalStaff.get());
-            response.setStatus("SUCCESS");
-            response.setMessage("Staff found successfully");
-            
-            return ResponseEntity.status(HttpStatus.NO_CONTENT);
-            
-        }
-        throw new StaffNotFoundException("Staff with the given id is not found");
-    }
-    
     @Override
     public ResponseEntity<byte[]> getQrCode(Long id) {
 
