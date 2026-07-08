@@ -120,6 +120,58 @@ public class StaffServiceImpl implements StaffService {
                 .contentType(org.springframework.http.MediaType.IMAGE_PNG)
                 .body(qrImage);
     }
+    
+    @Override
+	public ResponseEntity<ResponseStructure<StaffResponseDto>> updateStaff(Long id, StaffRequestDto dto) {
+    	
+    	Optional<Staff> optionalStaff = staffRepository.findById(id);
+    	
+    	if(optionalStaff.isEmpty()) {
+    		throw new StaffNotFoundException("Staff is not found with given id!");
+    	}
+    	
+    	Staff staff = optionalStaff.get();
+    	
+    	Optional<Staff> existingEmail = staffRepository.findByEmail(dto.getEmail());
+    	
+    	if(existingEmail.isPresent() && !existingEmail.get().getId().equals(id)) {
+    		throw new EmailExistsException("Email is already exists");
+    	}
+    	
+    	Optional<Staff> existingPhoneNumber = staffRepository.findByPhoneNumber(dto.getPhoneNumber());
+    	
+    	if(existingPhoneNumber.isPresent() && !existingPhoneNumber.get().getId().equals(id)) {
+    		throw new PhoneExistsException("Phone number is already exists");
+    	}
+    	 
+    	updateStaffEntity(staff, dto);
+    	
+    	Staff updatedStaff = staffRepository.save(staff);
+    	
+    	ResponseStructure<StaffResponseDto> response = new ResponseStructure<>();
+    	response.setStatus("Success");
+    	response.setMessage("Staff Updated Successfully!!");
+    	response.setData(mapToDto(updatedStaff));
+    	
+    	return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+    
+    //To update staff
+    private void updateStaffEntity(Staff staff, StaffRequestDto dto) {
+
+        staff.setFirstName(dto.getFirstName());
+        staff.setLastName(dto.getLastName());
+        staff.setEmail(dto.getEmail());
+        staff.setPhoneNumber(dto.getPhoneNumber());
+        staff.setDesignation(dto.getDesignation());
+        staff.setGender(dto.getGender());
+        staff.setAddress(dto.getAddress());
+        staff.setDateOfBirth(dto.getDateOfBirth());
+        staff.setEmergencyContact(dto.getEmergencyContact());
+        staff.setJoiningDate(dto.getJoiningDate());
+
+    }
+
     // DTO -> Entity
     private Staff mapToEntity(StaffRequestDto dto) {
 
@@ -180,12 +232,7 @@ public class StaffServiceImpl implements StaffService {
     	return staffCodeGenerator.generateStaffCode(year, month, sequence.getLastSequence());
     }
 
-	@Override
-	public ResponseEntity<ResponseStructure<StaffResponseDto>> updateStaff(Long id, StaffRequestDto dto) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public ResponseEntity<ResponseStructure<String>> activateStaff(Long id) {
 		// TODO Auto-generated method stub
