@@ -20,6 +20,4 @@ public interface AttendanceService {
 	void markAbsentForToday();
 
 	ResponseEntity<InputStreamResource> exportAttendanceToExcel();
-
-	
 }

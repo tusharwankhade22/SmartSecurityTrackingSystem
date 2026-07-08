@@ -1,10 +1,11 @@
 package edu.tushar.securitytrackingsystem.exception;
 
-public class StaffNotFoundException extends RuntimeException {
+public class EmailExistsException extends RuntimeException{
 
 	private static final long serialVersionUID = 1L;
 
-	public StaffNotFoundException(String message) {
+	public EmailExistsException(String message) {
         super(message);
     }
+	
 }

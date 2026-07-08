@@ -36,7 +36,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 	@Override
 	public String markAttendance(Long staffId) {
 		 Staff staff = staffRepository.findById(staffId)
-	                .orElseThrow(() -> new StaffNotFoundException());
+	                .orElseThrow(() -> new StaffNotFoundException("Staff is not found with an given id"));
 		 
 	     LocalDate today = LocalDate.now();
 	     LocalTime now = LocalTime.now();
@@ -81,7 +81,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 
 		    return attendances.stream().map(att -> {
 		        AttendanceDTO dto = new AttendanceDTO();
-		        dto.setStaffName(att.getStaff().getName());
+//		        dto.setStaffName(att.getStaff().getName());
 		        dto.setDate(att.getDate());
 		        dto.setCheckInTime(att.getCheckInTime());
 		        dto.setCheckOutTime(att.getCheckOutTime());
