@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,7 @@ import jakarta.validation.Valid;
 
 
 @RestController
-@RequestMapping("/api/staff")
+@RequestMapping("/api/v1/staff")
 @CrossOrigin(origins = "*")
 public class StaffController {
 	@Autowired
@@ -46,4 +47,11 @@ public class StaffController {
     public ResponseEntity<byte[]> getQrCode(@PathVariable Long id) {
         return staffService.getQrCode(id);   
     }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseStructure<StaffResponseDto>> updateStaff(@PathVariable Long id, @Valid @RequestBody StaffRequestDto dto) {
+    	return staffService.updateStaff(id, dto);
+    }
+    
+    
 }
