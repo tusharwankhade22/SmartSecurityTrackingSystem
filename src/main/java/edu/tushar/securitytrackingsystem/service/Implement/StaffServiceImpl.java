@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import edu.tushar.securitytrackingsystem.dto.request.StaffRequestDto;
+import edu.tushar.securitytrackingsystem.dto.request.StaffStatusRequestDto;
 import edu.tushar.securitytrackingsystem.dto.response.StaffResponseDto;
 import edu.tushar.securitytrackingsystem.entity.Staff;
 import edu.tushar.securitytrackingsystem.entity.StaffSequence;
@@ -22,6 +23,7 @@ import edu.tushar.securitytrackingsystem.service.StaffService;
 import edu.tushar.securitytrackingsystem.util.QRCodeGenerator;
 import edu.tushar.securitytrackingsystem.util.StaffCodeGenerator;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -111,7 +113,7 @@ public class StaffServiceImpl implements StaffService {
 
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() ->
-                        new StaffNotFoundException("Staff not found with id : " + id));
+                        new StaffNotFoundException("Staff is not found with given id"));
 
         byte[] qrImage = qrCodeGenerator.generateQRCodeImage(
                 staff.getQrCodeData());
@@ -232,16 +234,25 @@ public class StaffServiceImpl implements StaffService {
     	return staffCodeGenerator.generateStaffCode(year, month, sequence.getLastSequence());
     }
 
-	
 	@Override
-	public ResponseEntity<ResponseStructure<String>> activateStaff(Long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ResponseEntity<ResponseStructure<String>> deactivateStaff(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseEntity<ResponseStructure<StaffResponseDto>> updateActiveStatus(Long id, @Valid StaffStatusRequestDto dto) {
+        Optional<Staff> optionalStaff = staffRepository.findById(id);
+    	
+    	if(optionalStaff.isEmpty()) {
+    		throw new StaffNotFoundException("Staff is not found with given id!");
+    	}
+    	
+    	Staff staff = optionalStaff.get();
+    	staff.setActive(dto.getActive());
+    	
+    	Staff updatedStaff = staffRepository.save(staff);
+    	
+    	ResponseStructure<StaffResponseDto> response = new ResponseStructure<>();
+    	response.setStatus("Success");
+    	response.setMessage("Staff Status Updated Successfully!!");
+    	response.setData(mapToDto(updatedStaff));
+    	
+    	return ResponseEntity.ok().body(response);
+    	
 	}
 }
