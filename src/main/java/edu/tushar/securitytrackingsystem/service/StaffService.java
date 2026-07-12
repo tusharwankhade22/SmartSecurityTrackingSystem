@@ -7,8 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import edu.tushar.securitytrackingsystem.dto.request.StaffRequestDto;
+import edu.tushar.securitytrackingsystem.dto.request.StaffStatusRequestDto;
 import edu.tushar.securitytrackingsystem.dto.response.StaffResponseDto;
 import edu.tushar.securitytrackingsystem.response.ResponseStructure;
+import jakarta.validation.Valid;
 
 @Service
 public interface StaffService {
@@ -25,12 +27,8 @@ public interface StaffService {
     ResponseEntity<ResponseStructure<StaffResponseDto>>
     updateStaff(Long id, StaffRequestDto dto);
 
-    ResponseEntity<ResponseStructure<String>>
-    activateStaff(Long id);
-
-    ResponseEntity<ResponseStructure<String>>
-    deactivateStaff(Long id);
-
     ResponseEntity<byte[]>
     getQrCode(Long id);
+
+    ResponseEntity<ResponseStructure<StaffResponseDto>> updateActiveStatus(Long id, @Valid StaffStatusRequestDto dto);
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.tushar.securitytrackingsystem.dto.request.StaffRequestDto;
+import edu.tushar.securitytrackingsystem.dto.request.StaffStatusRequestDto;
 import edu.tushar.securitytrackingsystem.dto.response.StaffResponseDto;
 import edu.tushar.securitytrackingsystem.response.ResponseStructure;
 import edu.tushar.securitytrackingsystem.service.StaffService;
@@ -53,5 +55,8 @@ public class StaffController {
     	return staffService.updateStaff(id, dto);
     }
     
-    
+    @PatchMapping("/{id}")
+    public ResponseEntity<ResponseStructure<StaffResponseDto>> updateActiveStatus(@PathVariable Long id,@Valid @RequestBody StaffStatusRequestDto dto) {
+    	return staffService.updateActiveStatus(id,dto);
+    }
 }
